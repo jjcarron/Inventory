@@ -25,3 +25,4 @@
 23. 2026-02-15: User reported `git submodule update --init --recursive` appears to hang without copying files and requested troubleshooting guidance.
 24. 2026-02-15: User confirmed submodule sync solved initialization and asked for the best way to recover non-git data on another machine.
 25. 2026-02-15: User requested implementation of backup/restore scripts for non-versioned data; added root scripts `backup_data.sh` and `restore_data.sh` and documented usage in README.
+26. 2026-02-15: User requested excluding backup directory from git and committing the change.

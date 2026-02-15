@@ -103,3 +103,6 @@ inventorymanager.egg-info/
 
 # Test
 tests/
+
+# Local backup archives
+backups/
