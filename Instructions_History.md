@@ -20,3 +20,4 @@
 18. 2026-02-12: User validated the proposed manifest JSON schema (V1), and requested it to be added to InventoryManager/TODO.md.
 19. 2026-02-12: User requested creating a dedicated JSON schema file and referencing it in InventoryManager/TODO.md for clarity.
 20. 2026-02-15: User requested preparing a commit, converting the three project directories into Git submodules, updating documentation, and providing instructions to replicate the full structure on another machine.
+21. 2026-02-15: User requested adding a root README.md including submodule setup and replication instructions for another machine.
