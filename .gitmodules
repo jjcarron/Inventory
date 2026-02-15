@@ -1,0 +1,9 @@
+[submodule "InventoryManager"]
+	path = InventoryManager
+	url = git@github.com:jjcarron/InventoryManager.git
+[submodule "OrdersPostProcessingPipeline"]
+	path = OrdersPostProcessingPipeline
+	url = git@github.com:jjcarron/OrdersPostProcessingPipeline.git
+[submodule "aliexpress_orders_exporter"]
+	path = aliexpress_orders_exporter
+	url = git@github.com:jjcarron/aliexpress_orders_exporter.git
