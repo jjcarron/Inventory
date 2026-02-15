@@ -22,3 +22,6 @@
 20. 2026-02-15: User requested preparing a commit, converting the three project directories into Git submodules, updating documentation, and providing instructions to replicate the full structure on another machine.
 21. 2026-02-15: User requested adding a root README.md including submodule setup and replication instructions for another machine.
 22. 2026-02-15: User cleaned subproject repositories and asked to save any required changes and explain the standard procedure for handling submodule pointer updates.
+23. 2026-02-15: User reported `git submodule update --init --recursive` appears to hang without copying files and requested troubleshooting guidance.
+24. 2026-02-15: User confirmed submodule sync solved initialization and asked for the best way to recover non-git data on another machine.
+25. 2026-02-15: User requested implementation of backup/restore scripts for non-versioned data; added root scripts `backup_data.sh` and `restore_data.sh` and documented usage in README.

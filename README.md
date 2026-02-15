@@ -40,3 +40,16 @@ Documentation detaillee:
 - `WORKFLOW.md`
 - `DATA_CONTRACT.md`
 - `RECOVERY_STRATEGY.md`
+
+## Backup / Restore des donnees non versionnees
+Sauvegarde (archive + checksum):
+- `./backup_data.sh`
+- `./backup_data.sh /chemin/vers/repertoire_backups`
+
+Restauration:
+- `./restore_data.sh /chemin/vers/inventory_data_YYYYMMDD_HHMMSS.tar.gz`
+- `./restore_data.sh /chemin/vers/archive.tar.gz /chemin/vers/Inventory`
+
+Notes:
+- `backup_data.sh` sauvegarde les repertoires data existants des 3 sous-projets.
+- `restore_data.sh` verifie automatiquement le checksum si le fichier `.sha256` est present a cote de l'archive.
