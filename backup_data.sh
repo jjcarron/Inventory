@@ -31,7 +31,8 @@ if [[ "${#EXISTING_PATHS[@]}" -eq 0 ]]; then
 fi
 
 tar -C "$ROOT_DIR" --exclude-vcs -czf "$ARCHIVE_PATH" "${EXISTING_PATHS[@]}"
-sha256sum "$ARCHIVE_PATH" > "$CHECKSUM_PATH"
+# Write checksum with archive basename to keep the file portable across machines.
+(cd "$BACKUP_DIR" && sha256sum "$ARCHIVE_NAME" > "$(basename "$CHECKSUM_PATH")")
 
 echo "Backup created: $ARCHIVE_PATH"
 echo "Checksum file:  $CHECKSUM_PATH"

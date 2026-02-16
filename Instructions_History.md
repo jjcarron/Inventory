@@ -28,3 +28,6 @@
 26. 2026-02-15: User requested excluding backup directory from git and committing the change.
 27. 2026-02-16: User asked how to synchronize the three Git submodules in this repository.
 28. 2026-02-16: User requested creating a one-command submodule synchronization script and committing it.
+29. 2026-02-16: User reported restore_data checksum verification failure due to path mismatch in .sha256; requested troubleshooting and fix.
+30. 2026-02-16: User requested troubleshooting and guidance to verify/update the uv environment after a WSL error: `pypyodbc.OdbcNoLibrary` (`libodbc.so` missing).
+31. 2026-02-16: User requested committing all current root and submodule changes, including submodule permission updates.
