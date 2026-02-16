@@ -26,3 +26,5 @@
 24. 2026-02-15: User confirmed submodule sync solved initialization and asked for the best way to recover non-git data on another machine.
 25. 2026-02-15: User requested implementation of backup/restore scripts for non-versioned data; added root scripts `backup_data.sh` and `restore_data.sh` and documented usage in README.
 26. 2026-02-15: User requested excluding backup directory from git and committing the change.
+27. 2026-02-16: User asked how to synchronize the three Git submodules in this repository.
+28. 2026-02-16: User requested creating a one-command submodule synchronization script and committing it.

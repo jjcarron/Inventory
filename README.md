@@ -31,6 +31,14 @@ Options:
 - `git -C Inventory status`
 - `git -C Inventory submodule foreach 'git status --short --branch'`
 
+## Synchroniser tous les sous-modules (commande unique)
+- `./sync_all.sh`
+
+Ce script execute:
+- `git submodule sync --recursive`
+- `git submodule update --init --recursive`
+- `git submodule update --remote --merge --recursive`
+
 ## Workflow macro
 1. Export des commandes via `aliexpress_orders_exporter`.
 2. Post-processing et validation manuelle via `OrdersPostProcessingPipeline`.
