@@ -154,13 +154,12 @@ The CSV files in `InventoryManager/data/input` are snapshots exported from these
 
 ### 5.1 Basic_Data.xlsx
 Sheets and columns:
-- Resources: key, en, de, fr, it
 - Tags: code, name, parent_code, default_icon
 - Countries: name, ISO_code
 - UserRoles: role, code
 
 Purpose:
-- Stable reference data (i18n, tag taxonomy, countries, user roles).
+- Business reference data (tag taxonomy, countries, user roles). Translations are authoritative JSON catalogs under InventoryManager/inventorymanager/resources/i18n; they are not database initialization inputs.
 
 ### 5.2 Staging_Data.xlsx
 Sheets and columns:
@@ -181,7 +180,7 @@ Notes:
 ## 6) Exported staging CSV (versioned snapshots)
 Location: `InventoryManager/data/input`
 Files:
-- `Countries.csv`, `Resources.csv`, `Tags.csv`, `UserRoles.csv`, and the nine `Stg*.csv` files listed above.
+- `Countries.csv`, `Tags.csv`, `UserRoles.csv`, and the nine `Stg*.csv` files listed above.
 - Export filenames match the sheet/table name exactly; current export tools do not prepend `basic_data_`.
 
 Notes:
@@ -193,15 +192,21 @@ Purpose: manual completion of relations, especially item ⇄ container mapping.
 
 Status:
 - No `manually_modified_data/*.csv` directory was found at the expected workspace locations.
-- The active corrected order sources are the three files in `OrdersPostProcessingPipeline/data/manually_processed_input`. `container_code`, `code`, `uuid` and `flag` are passed through to the import.
+- The active corrected order sources are the four files in `OrdersPostProcessingPipeline/data/manually_processed_input`. `container_code`, `code`, `uuid` and `flag` are passed through to the import.
 - Do not assume a historical directory mentioned in older instructions has been recovered or is required by the current scripts.
 
 ## 8) Derived fields, snapshots and filesystem media
 
 - Active deterministic pipelines produce 27-column import CSVs, with `db_item_values` encoded as a JSON list.
 - `db_item_total_quantity` is derived from item_quantity and detected quantity multipliers. The implementation computes `db_unit_cost` from item_unit_price multiplied by purchased item_quantity, divided by total physical quantity, with quantity fallbacks. This was corrected on 2026-11-03 for batches ordering multiple units.
-- Current optional Excel outputs use sheet `StgAliItemOrders` in the three post-processing configurations; scraper Excel output uses `Item_Orders`.
-- `save_data` exports the 16 tables listed in `project.tables.export_data_tables`; all `Stg*` tables are excluded, including `StgAliItemOrders`.
+- Current optional Excel outputs use sheet `StgAliItemOrders` in the four post-processing configurations; scraper Excel output uses `Item_Orders`.
+- `save_data` exports the 15 tables listed in `project.tables.export_data_tables`; all `Stg*` tables are excluded, including `StgAliItemOrders`.
 - The output manifest filename remains `manifest.output.export_data.json`; `restore_data` writes `manifest.input.load_all.json` for compatibility. These filenames do not mean the old CLI commands still exist.
 - Media paths are relative to `InventoryManager/data/static`; database CSV snapshots contain references and metadata, not the binary files. Copying scraper images to this static directory and deploying them is a separate operation.
 - The default import reads all matching Ali CSVs. Use `load_ali_orders --input-file <filename>` for a single new batch: existing order IDs are rejected before import. CSV `order_price` maps to the ORM field `item_order_price`. See `WORKFLOW.md` before replaying on an active inventory.
+
+## 9) Reviewed import corrections — Linux_version_0.1
+
+The first two final `orders_details_enriched_*.csv` inputs were manually corrected on 2026-11-04 after deterministic processing. These final files are the validated import references until all corrections have been backported upstream; regenerating older manual inputs can overwrite reviewed quantities and split assortments. `quantity_multiplier` is not consumed by the Inventory loader; physical stock comes from `db_item_total_quantity`, allocated across `db_item_values`.
+
+The latest disposable PostgreSQL rebuild contains 2,204 items / 52,103 units, with no fractional allocation in active order rows. One heterogeneous box is represented by nine IC references of five units each plus five sockets, all in `BTE_7x13x2_TR08`. The input manifest captures current CSV hashes; it does not certify the business correctness of every source identifier. Detailed source observations are retained in `InventoryManager/docs/CORRECTED_IMPORT_REVIEW_20261104.md`.

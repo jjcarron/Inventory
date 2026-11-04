@@ -1,6 +1,6 @@
 # Fonctionnement actuel d’Inventory
 
-Vérifié le 2026-11-03 contre le code local des trois sous-projets, sur leur branche `linux`. Environnement de développement : Python 3.14 et un `.venv` par projet. Le scraper est adapté à Brave sous Linux via ChromeDriver ; les préférences enregistrées sont Suisse / Berne / Berne-Mittelland / Français / CHF.
+Mis à jour le 2026-11-04 après les essais complets et la refonte, contre le code local des trois sous-projets, sur leur branche `linux`. Environnement de développement : Python 3.14 et un `.venv` par projet. Le scraper est adapté à Brave sous Linux via ChromeDriver ; les préférences enregistrées sont Suisse / Berne / Berne-Mittelland / Français / CHF.
 
 ## Vue d’ensemble
 
@@ -278,12 +278,12 @@ En cas de correction manuelle déjà validée des champs IA, omettre `llm_step` 
 
 Les deux classeurs d’édition sont :
 
-- `InventoryManager/data/init_data/Basic_Data.xlsx` : pays, ressources multilingues, taxonomie Tags et rôles.
+- `InventoryManager/data/init_data/Basic_Data.xlsx` : pays, taxonomie Tags et rôles. Les traductions sont désormais dans `InventoryManager/inventorymanager/resources/i18n/*.json`, hors base et hors classeur ; voir `InventoryManager/docs/FRAMEWORK_AND_RESOURCES.md`.
 - `InventoryManager/data/init_data/Staging_Data.xlsx` : adresses, contenants, fournisseurs, utilisateurs, objets, CD/DVD, documents et compléments.
 
 Les outils `export_basic_data_to_csv.py` et `export_staging_data_to_csv.py` exportent une feuille par fichier vers `data/input/<NomDeFeuille>.csv`. Ils ne lisent pas PostgreSQL. La CLI standard charge les CSV, pas les classeurs.
 
-Les CSV de staging sont insérés dans les tables `Stg*`, puis transformés vers les tables métier en résolvant les relations via les codes. Pour une reconstruction depuis les fichiers, il faut conserver les deux classeurs et les trois lots de commandes validés, ou leurs CSV d’import équivalents, ainsi que les médias.
+Les CSV de staging sont insérés dans les tables `Stg*`, puis transformés vers les tables métier en résolvant les relations via les codes. Pour une reconstruction depuis les fichiers, il faut conserver les deux classeurs et les quatre lots de commandes validés, ou leurs CSV d’import équivalents, ainsi que les médias.
 
 ## 6. Connexion à PostgreSQL
 
@@ -403,3 +403,15 @@ Depuis InventoryManager :
 Les images sont servies depuis les fichiers locaux sous `data/static`. Le Dockerfile web historique n’est pas nécessaire à cette validation locale : le wrapper sert la même interface HTML et monte la même API. Le guide détaillé est `InventoryManager/docs/LOCAL_DEVELOPMENT.md`.
 
 Validation du lancement local : base de test initialisée (1 797 objets, 265 contenants, 1 339 lignes de commandes), prototype et documentation API accessibles sur le port 8080. Les six opérations API passent avec nettoyage des données synthétiques ; la page web, le schéma OpenAPI, la liste des contenants et une image ont été vérifiés par HTTP. Les cinq tests de protection de cible passent ; bilan de la suite InventoryManager : 80 réussis, trois échecs historiques inchangés.
+
+## État validé — Linux_version_0.1 (04.11.2026)
+
+La refonte sépare le framework réutilisable de l’application Inventory ; les anciens imports restent compatibles. Les traductions sont des catalogues JSON sous `InventoryManager/inventorymanager/resources/i18n`, hors SQL et hors `Basic_Data.xlsx`. Les données métier de référence restent dans les classeurs et leurs exports CSV.
+
+Les quatre CSV finaux ont été reconstruits dans un schéma PostgreSQL temporaire, supprimé après contrôle : **2 204 articles, 52 103 pièces, 1 372 lignes d’historique, 265 contenants**. Aucune répartition fractionnaire ne subsiste. Les dates du lot détaillé, les quartz (7 × 5), puis la boîte de 45 circuits et 5 socles ont été corrigés par l’utilisateur. Les 91 tests passent.
+
+Le chargement prend **28 secondes** ; création et comparaison prennent **environ 35 secondes**, contre environ 740 secondes auparavant. Le schéma `public` existant a été conservé en lecture seule : ces essais ne mettent pas à jour l’application en service. Le rapport complet est [CORRECTED_IMPORT_REVIEW_20261104.md](InventoryManager/docs/CORRECTED_IMPORT_REVIEW_20261104.md).
+
+**Reprise des corrections manuelles :** les deux premiers CSV finaux sous `InventoryManager/data/input` contiennent des corrections supplémentaires de quantités et des lots éclatés qui ne sont pas tous répercutés dans les fichiers manuels amont. Ne pas régénérer ces lots en écrasant les CSV validés. Une reprise doit préserver les corrections ou les reporter explicitement en amont, puis refaire le contrôle différentiel. Les identifiants, URL et multiplicateurs signalés dans le rapport restent documentés ; seule la quantité finale effectivement importée est validée par ce contrôle.
+
+Le tag `Linux_version_0.1` repère les trois sous-projets et le dépôt racine. Les classeurs, médias, journaux, profils Brave et identifiants privés restent gérés séparément du code versionné.

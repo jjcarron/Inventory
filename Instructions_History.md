@@ -76,3 +76,27 @@
 52. 2026-02-16: User reported restore_data checksum verification failure due to path mismatch in .sha256; requested troubleshooting and fix.
 53. 2026-02-16: User requested troubleshooting and guidance to verify/update the uv environment after a WSL error: `pypyodbc.OdbcNoLibrary` (`libodbc.so` missing).
 54. 2026-02-16: User requested committing all current root and submodule changes, including submodule permission updates.
+
+55. 2026-11-04: Implémenter la refonte avant frontend : corriger Database, extraire complètement les ressources et leur feuille Excel vers des catalogues JSON, rendre DatabaseLoader générique avec une spécialisation Inventory, adapter ThisDB et fiabiliser les transactions. Autoriser aussi le découpage physique framework/application ; conserver les classes dérivées et préparer les propositions API/portabilité. La conversion future des autres feuilles métier en JSON avec manifeste de chargement reste une étape ultérieure ; les conversions de traductions sont manuelles, avec aperçu, application et suppression explicites, ainsi qu’un export inverse.
+
+56. 2026-11-04: Ne pas diagnostiquer les anciens tests en échec ; remplacer ou adapter les tests rendus obsolètes par la refonte et vérifier les nouveaux contrats. Examiner les usages des traductions ambiguës avant de figer leur identité.
+
+57. 2026-11-04: Dissocier les clés sémantiques des abréviations d’étiquettes ; conserver bureau, buanderie, grenier et couleurs comme ressources distinctes, avec abréviation facultative. Utiliser strictement des clés en anglais (ex. color.green, room.office, furniture.desk), indépendantes des libellés traduits et des codes métier existants.
+
+58. 2026-11-04: Vérifier si la reconstruction a été comparée à la précédente base de validation. Le contrôle antérieur portait seulement sur les volumes ; effectuer une comparaison des 25 tables, colonnes et relations avec inventorymanager_dev public en lecture seule, et distinguer réattribution des identifiants, retrait attendu de Resources et différences numériques entre moteurs.
+
+59. 2026-11-04: L’utilisateur confie le diagnostic des quantités fractionnaires et reviendra plus tard. Remonter les calculs jusqu’aux sources et rejouer les étages concernés sans modifier les données de référence ; documenter les causes et corrections proposées avant toute réparation automatique.
+
+60. 2026-11-04: Examiner également la lenteur de reconstruction malgré la connexion haut débit au serveur. Mesurer le nombre de requêtes, la latence SQL via le tunnel et une lecture groupée ; identifier les opérations répétées et proposer les optimisations en conservant transactions, intégrité et spécialisation applicative.
+
+61. 2026-11-04: Optimiser les imports pendant que l’utilisateur corrige ses tables, puis réserver un nouvel essai complet à la fin de ses corrections. Travailler sur le code et des jeux synthétiques, sans modifier ni reconstruire les fichiers métier en cours d’édition. Conserver les règles de quantité/coût pendant cette optimisation ; regrouper lectures, insertions et mises à jour, et vérifier conservation du contenu et rollback.
+
+62. 2026-11-04: Les corrections utilisateur sont terminées dans les CSV finaux data/input, avec d’autres assortiments corrigés au-delà des dix lignes signalées. Tester un chargement complet isolé PostgreSQL, mesurer les optimisations et fournir les différences détaillées avec l’ancienne base, sans exiger l’égalité de valeurs volontairement corrigées. L’utilisateur jugera si les écarts correspondent à ses attentes ; ne pas régénérer ni modifier ses fichiers.
+
+63. 2026-11-04 : L’utilisateur confirme avoir corrigé les dates modifiées accidentellement lors du découpage d’une commande hétéroclite. Vérifier les nouvelles entrées, dont les quartz désormais détaillés, puis reprendre l’essai isolé et signaler uniquement les écarts encore présents, sans modifier les CSV.
+
+64. 2026-11-04 : L’utilisateur précise que la boîte contient 45 circuits intégrés et 5 socles, séparés en deux lignes ; une correction n’avait pas été enregistrée. Vérifier les valeurs finales et leur chargement isolé, notamment la disparition de la dernière répartition fractionnaire, sans modifier les sources ni la base existante.
+
+65. 2026-11-04 : Mettre la documentation à jour après validation des corrections et du gain de performances, committer les travaux, créer le tag Linux_version_0.1 puis pousser. Préparer un point cohérent du dépôt racine et des trois sous-projets ; conserver les données de référence pertinentes et exclure les artefacts locaux et identifiants.
+
+Vérifications de publication : 91 tests InventoryManager, 63 tests pipeline et 21 tests scraper réussis. Linux_version_0.1 conserve la séparation framework/application, les ressources JSON et les corrections d’import validées ; les fichiers locaux de tunnel, exports HTML/PDF et sortie de terminal ne font pas partie de la version.

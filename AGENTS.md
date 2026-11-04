@@ -29,6 +29,7 @@ Les fichiers suivants sont la base de reference pour reconstruire la base de don
 - `InventoryManager/data/init_data/Basic_Data.xlsx`
 - `InventoryManager/data/init_data/Staging_Data.xlsx`
 - Les médias référencés sous `InventoryManager/data/static/`.
+- Les catalogues de traduction de référence `InventoryManager/inventorymanager/resources/i18n/*.json`, hors base et hors classeur Basic_Data depuis la refonte du 04.11.2026.
 
 Ces chemins vérifiés remplacent les anciens noms génériques `manually_modified_data`, `base_data.xlsx` et `Staging_data.xlsx`. Les CSV d’import correspondants sont décrits dans `DATA_CONTRACT.md`.
 
@@ -45,3 +46,8 @@ Ces chemins vérifiés remplacent les anciens noms génériques `manually_modifi
 ## Exécution des commandes de l’agent
 - Utiliser explicitement un shell sans profil de connexion (`login=false`) pour les commandes de travail. Le shell de connexion réintroduit dans certains sous-projets les messages `Failed to create stream fd: Operation not permitted`.
 - Si des identifiants sont nécessaires, charger explicitement le script utilisateur `~/.secrets` dans le même appel que le programme, sans afficher de valeur.
+
+## Point validé Linux_version_0.1
+- Les CSV finaux `InventoryManager/data/input/orders_details_enriched_*.csv` incluent des corrections manuelles supplémentaires, non toutes répercutées dans les sources amont. Les préserver avant toute régénération ; vérifier les différences après reprise.
+- Validation du 04.11.2026 : 2 204 articles, 52 103 pièces, aucun partage fractionnaire ; chargement 28 s, création/comparaison 35 s, 91 tests réussis. La base existante est inchangée.
+- Voir `InventoryManager/docs/CORRECTED_IMPORT_REVIEW_20261104.md` pour les écarts et observations conservés.
