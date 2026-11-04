@@ -39,7 +39,8 @@ Options:
 Documentation detaillee:
 - `WORKFLOW.md`
 - `DATA_CONTRACT.md`
-- `RECOVERY_STRATEGY.md`
+- `DOCUMENTATION_AUDIT.md` : état des documents et écarts avec le code.
+- `RECOVERY_STRATEGY.md` : propositions historiques, pas le mode opératoire actuel.
 
 ## Backup / Restore des donnees non versionnees
 Sauvegarde (archive + checksum):
@@ -51,5 +52,27 @@ Restauration:
 - `./restore_data.sh /chemin/vers/archive.tar.gz /chemin/vers/Inventory`
 
 Notes:
-- `backup_data.sh` sauvegarde les repertoires data existants des 3 sous-projets.
+- `backup_data.sh` sauvegarde init_data/input/output d’InventoryManager et les dossiers data du pipeline et du scraper. Il exclut `InventoryManager/data/static`, les secrets et la configuration du tunnel ; ces éléments doivent être sauvegardés séparément.
 - `restore_data.sh` verifie automatiquement le checksum si le fichier `.sha256` est present a cote de l'archive.
+
+## Environnement de développement Linux
+
+Python 3.14, avec un dossier `.venv` propre à chaque sous-projet. Aucun sélecteur Windows/Linux n'est nécessaire.
+
+Depuis `InventoryManager` :
+```bash
+uv sync
+uv run pytest
+```
+
+Depuis `OrdersPostProcessingPipeline` ou `aliexpress_orders_exporter` :
+```bash
+uv venv --python 3.14 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/python -m pytest
+```
+
+Pour travailler avec l'environnement actif : `source .venv/bin/activate`.
+Le scraper utilise Brave sous Linux via ChromeDriver. Son profil dédié conserve les cookies et les préférences Suisse / Berne / Berne-Mittelland / Français / CHF. Voir `aliexpress_orders_exporter/README.md` pour le lancement.
+
+Le parcours complet, du navigateur à l’application web, est décrit dans [WORKFLOW.md](WORKFLOW.md). Il distingue ajout de commandes, reconstruction et restauration, et précise les limites du prototype web.

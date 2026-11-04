@@ -25,9 +25,12 @@ Le projet Inventory gere un stock de materiel pour un laboratoire d'electronique
 
 ## Donnees de base (invariants)
 Les fichiers suivants sont la base de reference pour reconstruire la base de donnees depuis zero, et doivent toujours rester coherents et exploitables :
-- `manually_modified_data/*.csv`
-- `base_data.xlsx`
-- `Staging_data.xlsx`
+- `OrdersPostProcessingPipeline/data/manually_processed_input/*.csv`
+- `InventoryManager/data/init_data/Basic_Data.xlsx`
+- `InventoryManager/data/init_data/Staging_Data.xlsx`
+- Les médias référencés sous `InventoryManager/data/static/`.
+
+Ces chemins vérifiés remplacent les anciens noms génériques `manually_modified_data`, `base_data.xlsx` et `Staging_data.xlsx`. Les CSV d’import correspondants sont décrits dans `DATA_CONTRACT.md`.
 
 ## Contraintes de travail
 - Maintenir une documentation a jour pour faciliter la comprehension et la contribution.
@@ -38,3 +41,7 @@ Les fichiers suivants sont la base de reference pour reconstruire la base de don
 - Preferer des actions reproductibles (scripts, configs versionnees).
 - Signaler clairement les hypothèses ou zones d'incertitude.
 - Eviter de modifier des fichiers de donnees de base sans procedure de mise a jour documentee.
+
+## Exécution des commandes de l’agent
+- Utiliser explicitement un shell sans profil de connexion (`login=false`) pour les commandes de travail. Le shell de connexion réintroduit dans certains sous-projets les messages `Failed to create stream fd: Operation not permitted`.
+- Si des identifiants sont nécessaires, charger explicitement le script utilisateur `~/.secrets` dans le même appel que le programme, sans afficher de valeur.

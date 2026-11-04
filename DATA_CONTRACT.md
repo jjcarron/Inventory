@@ -1,6 +1,6 @@
 # DATA CONTRACT - Inventory
 
-Snapshot date: 2026-02-12
+Verified against local code and files: 2026-11-03
 Scope: data sources and schemas used to rebuild the database and ingest new orders.
 
 ## 1) Scraper output (Aliexpress)
@@ -16,8 +16,10 @@ Columns (fixed):
 - store_name
 - store_link
 - item_name
+- db_item_name
 - item_link
 - item_image_link
+- db_item_img
 - item_attribute
 - item_unit_price
 - item_quantity
@@ -25,13 +27,16 @@ Columns (fixed):
 
 Notes:
 - File naming pattern is part of the contract.
+- There are 14 columns. `db_item_name` starts empty; `db_item_img` is filled when an image is downloaded.
+- The date filter is exclusive; the start date in the filename is the day after `--last_order_date`.
+- CSV exports use UTF-8 and semicolon separators; order numbers must remain text.
 
 ## 2) LLM step (OrdersPostProcessingPipeline)
 Purpose: generate a short name and category for each item. Output must be manually validated.
 
 Input columns (from scraper):
-- order, order_date, received_date, store_name, store_link, item_name, item_link, item_image_link,
-  item_attribute, item_unit_price, item_quantity, order_price
+- order, order_date, received_date, store_name, store_link, item_name, db_item_name, item_link, item_image_link,
+  db_item_img, item_attribute, item_unit_price, item_quantity, order_price
 
 Output columns after first steps (llm_step + ensure_extra_columns):
 - order
@@ -69,7 +74,7 @@ Location: `OrdersPostProcessingPipeline/data/manually_processed_input`
 File naming convention:
 - `data_n_YYYYMMDD.csv` where `n` is a sequence number and `YYYYMMDD` is creation date.
 
-Columns (same as LLM step output):
+Expected column superset (LLM quality/debug columns may be absent in historical files):
 - order
 - order_date
 - received_date
@@ -97,6 +102,8 @@ Columns (same as LLM step output):
 
 Notes:
 - Each file is a manually validated copy of the pipeline output after the first two steps.
+- Lots 1 and 2 have 22 columns (no ai_error/ai_raw_json); lot 3 has 24.
+- Lot 1 is historically comma-separated; the pipeline reader tries delimiter fallbacks. New files and generated outputs use semicolons.
 - A matching `pipeline.process_data_n.yml` is created manually to run the rest of the pipeline.
 
 ## 4) Enriched orders for import (InventoryManager)
@@ -134,7 +141,7 @@ Columns:
 - db_unit_cost
 
 Load rule:
-- `inventory_manager.py load` reads all files matching
+- `inventory_manager.py load_ali_orders` (also called by `load_data`) reads all files matching
   `^orders_details_enriched_(\d{4})(\d{2})(\d{2})_(\d{4})(\d{2})(\d{2})\.csv$` in `InventoryManager/data/input`.
 
 ## 5) Base data (authoritative, manual)
@@ -174,15 +181,27 @@ Notes:
 ## 6) Exported staging CSV (versioned snapshots)
 Location: `InventoryManager/data/input`
 Files:
-- `Stg*.csv`, `basic_data_*.csv`
+- `Countries.csv`, `Resources.csv`, `Tags.csv`, `UserRoles.csv`, and the nine `Stg*.csv` files listed above.
+- Export filenames match the sheet/table name exactly; current export tools do not prepend `basic_data_`.
 
 Notes:
 - These files are regenerated from the Excel sources and versioned for change tracking.
 - They are not the primary source of truth.
 
-## 7) Manually modified data (relations)
+## 7) Historical manually_modified_data location (relations)
 Purpose: manual completion of relations, especially item ⇄ container mapping.
 
 Status:
-- Files are expected under `manually_modified_data/*.csv` but are not present in the workspace at snapshot time.
-- Once available, their columns will be documented here.
+- No `manually_modified_data/*.csv` directory was found at the expected workspace locations.
+- The active corrected order sources are the three files in `OrdersPostProcessingPipeline/data/manually_processed_input`. `container_code`, `code`, `uuid` and `flag` are passed through to the import.
+- Do not assume a historical directory mentioned in older instructions has been recovered or is required by the current scripts.
+
+## 8) Derived fields, snapshots and filesystem media
+
+- Active deterministic pipelines produce 27-column import CSVs, with `db_item_values` encoded as a JSON list.
+- `db_item_total_quantity` is derived from item_quantity and detected quantity multipliers. The implementation computes `db_unit_cost` from item_unit_price multiplied by purchased item_quantity, divided by total physical quantity, with quantity fallbacks. This was corrected on 2026-11-03 for batches ordering multiple units.
+- Current optional Excel outputs use sheet `StgAliItemOrders` in the three post-processing configurations; scraper Excel output uses `Item_Orders`.
+- `save_data` exports the 16 tables listed in `project.tables.export_data_tables`; all `Stg*` tables are excluded, including `StgAliItemOrders`.
+- The output manifest filename remains `manifest.output.export_data.json`; `restore_data` writes `manifest.input.load_all.json` for compatibility. These filenames do not mean the old CLI commands still exist.
+- Media paths are relative to `InventoryManager/data/static`; database CSV snapshots contain references and metadata, not the binary files. Copying scraper images to this static directory and deploying them is a separate operation.
+- The default import reads all matching Ali CSVs. Use `load_ali_orders --input-file <filename>` for a single new batch: existing order IDs are rejected before import. CSV `order_price` maps to the ORM field `item_order_price`. See `WORKFLOW.md` before replaying on an active inventory.

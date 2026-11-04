@@ -1,5 +1,7 @@
 # Recovery Strategy - Inventory
 
+> Historical proposal dated 2026-02-12, reviewed 2026-11-03. This document is not the current runbook. Use [WORKFLOW.md](WORKFLOW.md) for implemented commands. CSV snapshots/manifests and PostgreSQL backup tools now exist; the provenance ledger, scheduling and retention policies described below are proposals unless separately verified. Current commands are `load_ali_orders`, `save_data` and `restore_data`. Media files require a separate backup.
+
 Snapshot date: 2026-02-12
 Target context: production operation with mutable DB and about 10,000+ objects.
 
