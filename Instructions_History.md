@@ -70,3 +70,9 @@
 48. 2026-11-04: Documenter dans InventoryManager/docs le rôle des classeurs, CSV, médias et fichiers historiques d’initialisation, en distinguant sources de départ et état courant. Proposer une architecture pour un inventaire évolutif, compte tenu de l’origine RAD destinée aux bases statiques ; conserver cette évolution au stade de discussion. Pour l’interface, + et − ajustent les quantités et Supprimer supprime la fiche. Aucun changement du code ou des données demandé.
 
 49. 2026-11-04: Créer et pousser un point de reprise par commit et tag Linux_version_0 dans les trois sous-projets et le dépôt racine avant la refonte. Préserver le framework à classes de base et les applications spécialisées par classes dérivées ; abandonner Access comme cible et retenir PostgreSQL avec SQLite, MariaDB pouvant devenir une autre cible. Revoir le découpage avant le frontend. L’ancien workflow Excel → Access → rapports explique le cadre initial. Exclure du commit les données et artefacts générés conformément aux consignes des projets ; les conserver localement.
+
+50. 2026-02-16: User asked how to synchronize the three Git submodules in this repository.
+51. 2026-02-16: User requested creating a one-command submodule synchronization script and committing it.
+52. 2026-02-16: User reported restore_data checksum verification failure due to path mismatch in .sha256; requested troubleshooting and fix.
+53. 2026-02-16: User requested troubleshooting and guidance to verify/update the uv environment after a WSL error: `pypyodbc.OdbcNoLibrary` (`libodbc.so` missing).
+54. 2026-02-16: User requested committing all current root and submodule changes, including submodule permission updates.
